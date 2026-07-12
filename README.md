@@ -44,15 +44,37 @@ sounds helpful but causes confusing bugs, because a script can behave
 differently depending on invisible junk left over from last time. We turn that
 off so every run starts fresh — the way Python does.
 
-Open RStudio, then:
+Open RStudio, then open the settings: menu bar → **RStudio → Settings…** (or
+press `Cmd+,`). This window has a list of tabs down the left side. Make these
+changes, then click **OK** (or **Apply**) at the end.
 
-1. Menu bar → **RStudio → Settings…** (or press `Cmd+,`).
-2. Go to the **General** tab.
-3. **Uncheck** "Restore .RData into workspace at startup".
-4. Set "Save workspace to .RData on exit" to **Never**.
-5. Click **OK**.
+**In the `General` tab** (the important ones):
+
+1. **Uncheck** "Restore .RData into workspace at startup".
+2. Set "Save workspace to .RData on exit" to **Never**.
+3. **Uncheck** "Show splash screen at startup" — skips the RStudio logo screen so
+   it opens straight to your work.
+
+### 1.2b A few comfort settings (optional but nice)
+
+While you're in the same **Settings…** window, these make day-to-day work
+easier:
+
+- **Rainbow parentheses** — in the **`Code`** tab, open its **`Display`**
+  sub-tab and check **"Rainbow parentheses"**. It colours each level of nested
+  `(` `)` `[` `]` `{` `}` differently, so it's easy to see which bracket matches
+  which — handy in R, where function calls nest a lot.
+- **Put the Console in the top-right** — open the **`Pane Layout`** tab. RStudio's
+  window is four panes; here you choose what goes where. Set the **top-right**
+  pane to **Console**. That puts your code editor (top-left) and the Console
+  right next to each other, which is a comfortable side-by-side setup.
+
+Click **OK** when done.
 
 ### 1.3 Tell RStudio where Git is
+
+> Quit RStudio before running this (RStudio rewrites that file when it closes,
+> which would undo the change). Reopen it afterward.
 
 RStudio needs to know where the `git` program lives on your computer. Run this
 **one-liner** in iTerm. It finds `git` automatically and writes the path into
@@ -62,8 +84,8 @@ RStudio's settings:
 f=~/.config/rstudio/rstudio-prefs.json; mkdir -p "${f%/*}"; [ -s "$f" ] || echo '{}' >"$f"; jq --arg p "$(command -v git)" '.git_exe_path=$p' "$f" >"$f.tmp" && mv "$f.tmp" "$f"
 ```
 
-> Quit RStudio before running this (RStudio rewrites that file when it closes,
-> which would undo the change). Reopen it afterward.
+The reason for this 1-liner is the rstudio configuration UI resolves the brew git
+link to a specific version of git - this setting will break when git is upgraded.
 
 ---
 
@@ -107,8 +129,14 @@ clash with anything else on your computer.
 1. Open **`scripts/run-analysis.R`**.
 2. Click **Source** (or `Cmd+Shift+S`).
 
-You'll see numbers printed in the **Console** (bottom-left), and a chart image
-appears in the `output` folder. That's it.
+You'll see numbers printed in the **Console** (bottom-left), and a chart appears
+in the **Plots** pane (bottom-right). That's it.
+
+> **Saving a chart to a file.** In RStudio, charts show in the Plots pane and
+> aren't written to disk. To also save them as PNG files in the `output` folder,
+> type `Sys.setenv(SAVE_PLOTS = 1)` in the Console once, then Source the script
+> again. (When the project is run non-interactively with `Rscript`, charts are
+> always saved, since there's no Plots pane to draw on.)
 
 > **Why "Source" and not just running lines?** *Source* runs the whole file from
 > top to bottom in one go, the way a finished script is meant to run. You can

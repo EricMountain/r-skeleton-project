@@ -9,6 +9,7 @@
 library(here)  # locates the project root automatically; paths work from anywhere
 
 source(here("R", "stats.R"))
+source(here("R", "plotting.R"))
 
 # --- Sample data -----------------------------------------------------------
 x <- c(5, 7, 8, 7, 2, 2, 9, 4, 11, 12, 9, 6)
@@ -23,11 +24,8 @@ cat("Summary of x:\n"); str(sx)
 cat("\nSummary of y:\n"); str(sy)
 cat(sprintf("\nPearson correlation(x, y): %.4f\n", r))
 
-# --- Output artifact -------------------------------------------------------
-# Write a plot to disk rather than relying on an interactive device, so the
-# script produces the same result under Rscript, RStudio, or CI.
-dir.create(here("output"), showWarnings = FALSE)
-png(here("output", "scatter.png"), width = 800, height = 600)
-plot(x, y, main = "x vs y", pch = 19)
-invisible(dev.off())
-cat(sprintf("\nWrote %s\n", here("output", "scatter.png")))
+# --- Plot ------------------------------------------------------------------
+# Shows in the RStudio Plots pane when you Source this; saved to
+# output/scatter.png when run non-interactively (e.g. Rscript). To also save it
+# from RStudio, set SAVE_PLOTS=1 or pass save = TRUE. See R/plotting.R.
+render_plot("scatter", plot(x, y, main = "x vs y", pch = 19))
