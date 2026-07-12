@@ -111,8 +111,35 @@ else
   git -C "$TARGET" symbolic-ref HEAD refs/heads/main
 fi
 
+# --- install the project's packages ----------------------------------------
+# Populate the new project's private renv library from renv.lock so it's ready
+# to run with no extra manual step. This needs R (Rscript) and the internet.
+# Set SKIP_PACKAGE_INSTALL=1 to skip it (e.g. offline, or for a quick scaffold).
+PACKAGES_INSTALLED=0
+if [ "${SKIP_PACKAGE_INSTALL:-0}" = "1" ]; then
+  echo "Skipping package install (SKIP_PACKAGE_INSTALL=1)."
+elif command -v Rscript >/dev/null 2>&1; then
+  echo
+  echo "Installing the project's packages (uses the internet, can take a few minutes)..."
+  # Don't let a failed install abort the whole thing — the project is still
+  # usable, and packages can be installed later from RStudio.
+  if ( cd "$TARGET" && Rscript scripts/get-packages.R ); then
+    PACKAGES_INSTALLED=1
+  else
+    echo "Warning: package install didn't finish. You can complete it later by" >&2
+    echo "opening the project and Sourcing scripts/get-packages.R." >&2
+  fi
+else
+  echo "Note: 'Rscript' not found, so packages weren't installed."
+fi
+
 echo
 echo "✅ Done. Next steps:"
 echo "   1. open \"$TARGET/$NEW_NAME.Rproj\"          # opens the project in RStudio"
-echo "   2. In RStudio, Source scripts/get-packages.R  # install the packages"
-echo "   3. Start editing analysis.R"
+if [ "$PACKAGES_INSTALLED" = "1" ]; then
+  echo "   2. In RStudio, Source scripts/run-analysis.R  # packages are already installed"
+  echo "   3. Start editing analysis.R"
+else
+  echo "   2. In RStudio, Source scripts/get-packages.R  # install the packages"
+  echo "   3. Then Source scripts/run-analysis.R and start editing analysis.R"
+fi

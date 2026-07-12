@@ -182,17 +182,23 @@ script:
 - copies the skeleton (the scripts, `analysis.R`, helper functions, and the
   package list) into the new folder;
 - **leaves behind** anything that shouldn't be shared between projects — the git
-  history, generated `output/`, and the installed packages (those get rebuilt
-  fresh in the new project);
+  history and the generated `output/`;
 - renames the `.Rproj` and updates this README so they match the new project's
   name;
-- starts a brand-new, empty git history for it.
+- starts a brand-new, empty git history for it;
+- **installs the project's packages for you** (the same thing
+  `scripts/get-packages.R` does), so the new project is ready to run right away.
 
-Then just follow **Part 2** above in the new project: open its `.Rproj`, Source
-`scripts/get-packages.R`, and you're ready to work.
+Then just open the new project's `.Rproj` and Source `scripts/run-analysis.R` —
+no separate install step needed.
 
-> On a Mac, if the `rsync` tool it needs is missing, the script installs it for
-> you with Homebrew. (You already have it, so this won't come up.)
+> **Notes**
+> - On a Mac, if the `rsync` tool it needs is missing, the script installs it
+>   for you with Homebrew. (You already have it, so this won't come up.)
+> - The package install needs the internet and takes a minute or two. To skip it
+>   (e.g. you're offline), put `SKIP_PACKAGE_INSTALL=1` in front of the command:
+>   `SKIP_PACKAGE_INSTALL=1 ./new-project.sh ~/Projects/my-new-project`. You can
+>   install the packages later by Sourcing `scripts/get-packages.R`.
 
 ---
 

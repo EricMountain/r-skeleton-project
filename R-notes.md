@@ -150,7 +150,7 @@ will feel much more predictable.
 | R | Closest analogy |
 |---|---|
 | session / REPL | live `python` interpreter |
-| workspace (`.GlobalEnv`) | current namespace / global scope |
+| workspace (`.GlobalEnv`) | current in-memory namespace (variables...) / global scope |
 | image (`.RData`) | `pickle` of whole namespace |
 | `.Rhistory` | `~/.bash_history` |
 | library (`.libPaths()`) | site-packages directory |
