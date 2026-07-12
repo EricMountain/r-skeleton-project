@@ -122,7 +122,10 @@ you don't have to configure anything by hand.
 
 ---
 
-## Part 2 · Using the project
+## Part 2 · Using the project in RStudio
+
+This part is written for **RStudio**. If you use **VSCode**, skip to **Part 3**,
+which covers the same operations there.
 
 ### 2.1 Open the project
 
@@ -178,10 +181,78 @@ in the **Plots** pane (bottom-right). That's it.
 
 ---
 
+## Part 3 · Using the project in VSCode
+
+The same operations as Part 2, for **VSCode**. This assumes you did the VSCode
+setup in **Part 1.3** (the R extensions plus `languageserver` / `httpgd`).
+
+### 3.1 Open the project
+
+VSCode works at the *folder* level — there's no `.Rproj` to open. From iTerm:
+
+```bash
+code ~/Projects/R-test
+```
+
+The R extension starts automatically. If VSCode offers to install the
+**recommended extensions**, accept them — that's the R support this project
+expects. (The project's paths still work in VSCode: the tools find the project
+by its folder, which is marked by the `.Rproj` file sitting in it.)
+
+### 3.2 First time only: get the packages
+
+Open a terminal *inside* VSCode (menu **Terminal → New Terminal**, or press
+`` Ctrl+` ``), then run:
+
+```bash
+Rscript scripts/get-packages.R
+```
+
+Wait for `✅ All packages are installed`. As in RStudio, the packages install
+into a private folder inside the project, so they can't clash with anything else.
+
+### 3.3 Run the analysis
+
+There are two ways, depending on whether you want to **see** the chart or **save**
+it — this mirrors the two modes described in the plotting helper.
+
+**See it (interactive — the chart opens in a viewer):**
+
+1. Open **`scripts/run-analysis.R`** (or `analysis.R`).
+2. Click the **▷ "Run Source"** icon at the top-right of the editor — or open the
+   Command Palette (`Cmd+Shift+P`) and run **"R: Run Source"**.
+
+The first time, this starts an R session in the terminal. The numbers print
+there, and the chart opens in a **plot panel** (drawn by `httpgd`). Keep that R
+session running — it's your interactive console, the equivalent of RStudio's.
+
+**Save it to a file (non-interactive):** in the VSCode terminal, run:
+
+```bash
+Rscript scripts/run-analysis.R
+```
+
+The numbers print in the terminal and the chart is written to
+`output/scatter.png`.
+
+> **Saving a chart while working interactively.** Same rule as RStudio: in the R
+> session, type `Sys.setenv(SAVE_PLOTS = 1)` once, then run the file again to
+> also write PNGs to the `output` folder.
+
+### 3.4 The helper scripts in VSCode
+
+Wherever Part 2 or the table below says "Source the file", in VSCode you instead
+either click **▷ Run Source**, or run `Rscript scripts/<name>.R` in the terminal.
+For example, to record a newly added package (see "Adding a new package" below),
+run `Rscript scripts/save-packages.R`.
+
+---
+
 ## The helper scripts
 
-Everything you routinely need is a file in the `scripts/` folder. Open one and
-click **Source**. You never have to memorize commands.
+Everything you routinely need is a file in the `scripts/` folder. Run one to do
+its job — **Source** it in RStudio, or **▷ Run Source** / `Rscript scripts/<name>.R`
+in VSCode (see Part 3). You never have to memorize commands.
 
 | Open this file            | What it does                                             | When to use it                                  |
 | ------------------------- | -------------------------------------------------------- | ----------------------------------------------- |
@@ -194,12 +265,14 @@ click **Source**. You never have to memorize commands.
 
 Say you want to use a package called `janitor`. Two steps:
 
-1. In the RStudio **Console** (bottom-left), type and press Return:
+1. In the R **Console** (RStudio: bottom-left; VSCode: the R terminal), type and
+   press Return:
    ```r
    renv::install("janitor")
    ```
-2. Add `library(janitor)` to your script where you use it, then open
-   `scripts/save-packages.R` and **Source** it to record the new package.
+2. Add `library(janitor)` to your script where you use it, then run
+   `scripts/save-packages.R` (Source in RStudio, or `Rscript scripts/save-packages.R`
+   in VSCode) to record the new package.
 
 ---
 
@@ -254,8 +327,8 @@ script:
 - **installs the project's packages for you** (the same thing
   `scripts/get-packages.R` does), so the new project is ready to run right away.
 
-Then just open the new project's `.Rproj` and Source `scripts/run-analysis.R` —
-no separate install step needed.
+Then just open the new project (its `.Rproj` in RStudio, or the folder in VSCode)
+and run `scripts/run-analysis.R` — no separate install step needed.
 
 > **Notes**
 > - On a Mac, if the `rsync` tool it needs is missing, the script installs it
@@ -270,14 +343,15 @@ no separate install step needed.
 ## If something looks wrong
 
 - **"could not find function" or a package error when running the analysis** →
-  Open `scripts/get-packages.R` and Source it. You probably haven't installed
-  the packages on this computer yet.
-- **Not sure what state things are in** → Open `scripts/check-packages.R` and
-  Source it; it tells you plainly what (if anything) is out of sync and which
-  helper script to run next.
-- **Paths / "file not found" errors** → Make sure you opened the project via
-  `R-test.Rproj` (Part 2.1), not by opening a lone file. The project relies on
-  knowing its own folder.
+  Run `scripts/get-packages.R` (Source it in RStudio, or `Rscript
+  scripts/get-packages.R` in VSCode). You probably haven't installed the packages
+  on this computer yet.
+- **Not sure what state things are in** → Run `scripts/check-packages.R` the same
+  way; it tells you plainly what (if anything) is out of sync and which helper
+  script to run next.
+- **Paths / "file not found" errors** → Make sure you opened the *project*, not a
+  lone file: in RStudio open `R-test.Rproj` (Part 2.1); in VSCode open the project
+  *folder* (Part 3.1). The project relies on knowing its own folder.
 
 ---
 
