@@ -1,0 +1,18 @@
+# R session artifacts
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+
+# Generated outputs
+output/
+
+# renv: keep the lockfile + settings/activation, ignore the local library.
+# `renv/library` is machine-specific; teammates rebuild it with renv::restore().
+renv/library/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/staging/
