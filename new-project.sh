@@ -96,7 +96,7 @@ rsync -a \
 if [ -n "$OLD_NAME" ] && [ -f "$TARGET/$OLD_NAME.Rproj" ]; then
   if [ "$NEW_NAME" != "$OLD_NAME" ]; then
     mv "$TARGET/$OLD_NAME.Rproj" "$TARGET/$NEW_NAME.Rproj"
-    # Update references to the old name (e.g. "R-test.Rproj", "R-test/") in the
+    # Update references to the old name (e.g. "r-skeleton-project.Rproj", "r-skeleton-project/") in the
     # copied Markdown so the instructions match the new project.
     find "$TARGET" -maxdepth 1 -name "*.md" -type f \
       -exec perl -pi -e "s/\Q$OLD_NAME\E/$NEW_NAME/g" {} +

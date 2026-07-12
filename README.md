@@ -105,9 +105,11 @@ That does two things:
   debugger.
 - **Installs the R packages the extension needs**, into this project — the
   equivalent of running, in R:
+
   ```r
   install.packages(c("languageserver", "httpgd"))
   ```
+
   `languageserver` powers code completion and diagnostics; `httpgd` is the plot
   viewer. These are *editor tools*, not part of the analysis, so they're
   deliberately kept out of the project's package list (`renv.lock`).
@@ -139,7 +141,7 @@ Navigate to the directory containing the project, then open the `.RProj` file.
 #### In iTerm
 
 ```bash
-open ~/Projects/R-test/R-test.Rproj
+open ~/Projects/r-skeleton-project/r-skeleton-project.Rproj
 ```
 
 This opens the folder **as a project** in RStudio.
@@ -173,7 +175,7 @@ in the **Plots** pane (bottom-right). That's it.
 > type `Sys.setenv(SAVE_PLOTS = 1)` in the Console once, then Source the script
 > again. (When the project is run non-interactively with `Rscript`, charts are
 > always saved, since there's no Plots pane to draw on.)
-
+>
 > **Why "Source" and not just running lines?** *Source* runs the whole file from
 > top to bottom in one go, the way a finished script is meant to run. You can
 > also step through a file line by line with `Cmd+Return` while you're
@@ -191,7 +193,7 @@ setup in **Part 1.3** (the R extensions plus `languageserver` / `httpgd`).
 VSCode works at the *folder* level — there's no `.Rproj` to open. From iTerm:
 
 ```bash
-code ~/Projects/R-test
+code ~/Projects/r-skeleton-project
 ```
 
 The R extension starts automatically. If VSCode offers to install the
@@ -267,9 +269,11 @@ Say you want to use a package called `janitor`. Two steps:
 
 1. In the R **Console** (RStudio: bottom-left; VSCode: the R terminal), type and
    press Return:
+
    ```r
    renv::install("janitor")
    ```
+
 2. Add `library(janitor)` to your script where you use it, then run
    `scripts/save-packages.R` (Source in RStudio, or `Rscript scripts/save-packages.R`
    in VSCode) to record the new package.
@@ -278,10 +282,10 @@ Say you want to use a package called `janitor`. Two steps:
 
 ## What's in this folder
 
-```
-R-test/
+```text
+r-skeleton-project/
 ├── README.md              ← you are here
-├── R-test.Rproj           ← open THIS to start (opens the project in RStudio)
+├── r-skeleton-project.Rproj           ← open THIS to start (opens the project in RStudio)
 ├── analysis.R             ← the main script: the actual analysis
 ├── R/
 │   ├── stats.R            ← reusable helper functions used by analysis.R
@@ -331,6 +335,7 @@ Then just open the new project (its `.Rproj` in RStudio, or the folder in VSCode
 and run `scripts/run-analysis.R` — no separate install step needed.
 
 > **Notes**
+>
 > - On a Mac, if the `rsync` tool it needs is missing, the script installs it
 >   for you with Homebrew. (You already have it, so this won't come up.)
 > - The package install needs the internet and takes a minute or two. To skip it
@@ -350,7 +355,7 @@ and run `scripts/run-analysis.R` — no separate install step needed.
   way; it tells you plainly what (if anything) is out of sync and which helper
   script to run next.
 - **Paths / "file not found" errors** → Make sure you opened the *project*, not a
-  lone file: in RStudio open `R-test.Rproj` (Part 2.1); in VSCode open the project
+  lone file: in RStudio open `r-skeleton-project.Rproj` (Part 2.1); in VSCode open the project
   *folder* (Part 3.1). The project relies on knowing its own folder.
 
 ---
