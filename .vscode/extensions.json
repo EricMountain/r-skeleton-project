@@ -1,0 +1,8 @@
+{
+  // Extensions VSCode will offer to install when this project is opened.
+  // (setup-vscode.sh installs them for you from the command line.)
+  "recommendations": [
+    "reditorsupport.r",
+    "rdebugger.r-debugger"
+  ]
+}

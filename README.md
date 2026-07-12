@@ -18,15 +18,19 @@ There are two parts below:
 
 These steps assume you're on a Mac and already have **Homebrew** (`brew`),
 **iTerm** (a terminal app), and **jq** installed. Everything below is typed into
-iTerm. To run a command, copy the line, paste it into iTerm, and press Return.
+iTerm: copy a line, paste it, and press Return. A few steps run a **script that
+ships with this project** (e.g. `./configure-rstudio.sh`) — for those, first
+`cd` into the project folder (the one containing this README).
 
-### 1.1 Install R and RStudio
+You'll work in one of two editors — **RStudio** or **VSCode**. First do the
+common step (1.1), then follow the section for your editor. You can set up both.
 
-R is the language. RStudio is the friendly app you'll actually work in (think of
-it like a nicer, R-specific version of an editor).
+### 1.1 Install R (needed either way)
+
+R is the language itself. Install it first:
 
 ```bash
-brew install r rstudio
+brew install r
 ```
 
 Check it worked:
@@ -35,57 +39,86 @@ Check it worked:
 R --version
 ```
 
-You should see something like `R version 4.6.1`. If so, you're good.
+You should see something like `R version 4.6.1`. If so, you're good. Now pick
+your editor:
 
-### 1.2 Make R start clean every time (important)
+- **RStudio** — an all-in-one app built for R (best plots, data viewer, and
+  debugger; easiest if you're new). → **section 1.2**. *The step-by-step in
+  Part 2 is written for RStudio.*
+- **VSCode** — good if you already use it for other languages. → **section 1.3**.
 
-By default, R tries to "remember" your leftover data between sessions. This
-sounds helpful but causes confusing bugs, because a script can behave
-differently depending on invisible junk left over from last time. We turn that
-off so every run starts fresh — the way Python does.
+### 1.2 RStudio
 
-Open RStudio, then open the settings: menu bar → **RStudio → Settings…** (or
-press `Cmd+,`). This window has a list of tabs down the left side. Make these
-changes, then click **OK** (or **Apply**) at the end.
-
-**In the `General` tab** (the important ones):
-
-1. **Uncheck** "Restore .RData into workspace at startup".
-2. Set "Save workspace to .RData on exit" to **Never**.
-3. **Uncheck** "Show splash screen at startup" — skips the RStudio logo screen so
-   it opens straight to your work.
-
-### 1.2b A few comfort settings (optional but nice)
-
-While you're in the same **Settings…** window, these make day-to-day work
-easier:
-
-- **Rainbow parentheses** — in the **`Code`** tab, open its **`Display`**
-  sub-tab and check **"Rainbow parentheses"**. It colours each level of nested
-  `(` `)` `[` `]` `{` `}` differently, so it's easy to see which bracket matches
-  which — handy in R, where function calls nest a lot.
-- **Put the Console in the top-right** — open the **`Pane Layout`** tab. RStudio's
-  window is four panes; here you choose what goes where. Set the **top-right**
-  pane to **Console**. That puts your code editor (top-left) and the Console
-  right next to each other, which is a comfortable side-by-side setup.
-
-Click **OK** when done.
-
-### 1.3 Tell RStudio where Git is
-
-> Quit RStudio before running this (RStudio rewrites that file when it closes,
-> which would undo the change). Reopen it afterward.
-
-RStudio needs to know where the `git` program lives on your computer. Run this
-**one-liner** in iTerm. It finds `git` automatically and writes the path into
-RStudio's settings:
+**Install it:**
 
 ```bash
-f=~/.config/rstudio/rstudio-prefs.json; mkdir -p "${f%/*}"; [ -s "$f" ] || echo '{}' >"$f"; jq --arg p "$(command -v git)" '.git_exe_path=$p' "$f" >"$f.tmp" && mv "$f.tmp" "$f"
+brew install --cask rstudio
 ```
 
-The reason for this 1-liner is the rstudio configuration UI resolves the brew git
-link to a specific version of git - this setting will break when git is upgraded.
+**Configure it (one command).** Rather than clicking through the Settings
+window, this project includes a script that applies the recommended settings.
+Quit RStudio if it's open, then from inside the project folder run:
+
+```bash
+./configure-rstudio.sh
+```
+
+That sets, all at once:
+
+- **Start clean every time** — R won't reload or save leftover data between
+  sessions (the biggest source of confusing bugs; this makes every run start
+  fresh, the way Python does).
+- **Skip the splash screen** — opens straight to your work.
+- **Rainbow parentheses** — colours each level of nested brackets so it's easy
+  to see which `(` matches which `)`.
+- **Console in the top-right** — puts the editor and Console side by side.
+- **Git path** — tells RStudio where `git` lives.
+
+> **Why a script for the Git path?** If you set it through RStudio's own UI, it
+> records the *exact* Homebrew version path (e.g. `.../git/2.54.0/bin/git`),
+> which breaks the next time `git` is upgraded. The script records the stable
+> `git` location instead. (You can still change any of these later in
+> **RStudio → Settings…**.)
+
+That's the RStudio setup done — skip to **Part 2**.
+
+### 1.3 VSCode
+
+**Install it:**
+
+```bash
+brew install --cask visual-studio-code
+```
+
+If typing `code` in iTerm says "command not found", open VSCode, press
+`Cmd+Shift+P`, and run **"Shell Command: Install 'code' command in PATH"**.
+
+**Configure it (one command).** From inside the project folder run:
+
+```bash
+./setup-vscode.sh
+```
+
+That does two things:
+
+- **Installs the VSCode extensions** — the R language support and the R
+  debugger.
+- **Installs the R packages the extension needs**, into this project — the
+  equivalent of running, in R:
+  ```r
+  install.packages(c("languageserver", "httpgd"))
+  ```
+  `languageserver` powers code completion and diagnostics; `httpgd` is the plot
+  viewer. These are *editor tools*, not part of the analysis, so they're
+  deliberately kept out of the project's package list (`renv.lock`).
+
+The project's VSCode settings themselves already live in the `.vscode/` folder
+(so plots open with `httpgd`, and the R session is tracked). They travel with
+the project — including to new projects you create with `new-project.sh` — so
+you don't have to configure anything by hand.
+
+> **Optional:** for a nicer console, install [`radian`](https://github.com/randy3k/radian)
+> (`pip install radian`) and point VSCode at it via the `r.rterm.mac` setting.
 
 ---
 
@@ -178,13 +211,17 @@ R-test/
 ├── R-test.Rproj           ← open THIS to start (opens the project in RStudio)
 ├── analysis.R             ← the main script: the actual analysis
 ├── R/
-│   └── stats.R            ← reusable helper functions used by analysis.R
+│   ├── stats.R            ← reusable helper functions used by analysis.R
+│   └── plotting.R         ← helper that shows plots or saves them as PNGs
 ├── scripts/               ← click-and-run helpers (see table above)
 │   ├── get-packages.R
 │   ├── run-analysis.R
 │   ├── save-packages.R
 │   └── check-packages.R
+├── configure-rstudio.sh   ← one-time RStudio setup (Part 1.2)
+├── setup-vscode.sh        ← one-time VSCode setup (Part 1.3)
 ├── new-project.sh         ← make a fresh project from this skeleton (see below)
+├── .vscode/               ← VSCode settings for this project (travels with it)
 ├── output/                ← generated results (charts, etc.) — created for you
 ├── renv.lock              ← the exact list of packages + versions (don't edit by hand)
 └── renv/                  ← the private package folder (managed automatically)

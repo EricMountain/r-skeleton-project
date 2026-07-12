@@ -1,0 +1,21 @@
+{
+  // R settings for this project. These travel with the project (they're copied
+  // by new-project.sh), so anyone opening it in VSCode gets the same behaviour.
+
+  // Draw plots with httpgd (shows them in a VSCode panel / browser tab).
+  "r.plot.useHttpgd": true,
+
+  // Let the R extension track the running R session so the Environment/Plot/
+  // Help views stay in sync with your code.
+  "r.sessionWatcher": true,
+
+  // Send multi-line code to the terminal as one bracketed paste (needed for a
+  // clean experience, and required if you use the radian console).
+  "r.bracketedPaste": true,
+
+  // Keep the auto-generated renv library out of the file explorer / search.
+  "files.exclude": {
+    "**/renv/library": true,
+    "**/renv/staging": true
+  }
+}
