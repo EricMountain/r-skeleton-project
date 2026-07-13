@@ -281,6 +281,49 @@ Say you want to use a package called `janitor`. Two steps:
 
 ---
 
+## Testing a script
+
+For scripts that read input on **stdin** and write their answer to **stdout**,
+there's a small test runner: `scripts/run-tests.R`. It runs your script against
+recorded input/output pairs and reports any mismatches.
+
+**Layout.** Put test cases in `tests/<script-name>/`, named `input.X` and
+`output.X` (X is an integer). For a script `examples/sum.R`:
+
+```text
+tests/sum/
+├── input.1     output.1
+├── input.2     output.2
+└── input.3     output.3
+```
+
+Each `input.X` is fed to the script on stdin; its stdout is compared to
+`output.X` **exactly, byte for byte** — including whitespace and the final
+newline. (So make sure each `output.X` ends the way your script really prints it;
+most scripts end with a trailing newline.) A worked example (`examples/sum.R` —
+sums the numbers it reads) ships with the skeleton; delete `examples/` and
+`tests/sum/` once you don't need it.
+
+**Run the tests** — in RStudio, Source `scripts/run-tests.R`, then call:
+
+```r
+run_tests("examples/sum.R")
+```
+
+or from a terminal / VSCode:
+
+```bash
+Rscript scripts/run-tests.R examples/sum.R
+```
+
+Passing tests show `✓`; each failure shows the byte counts, a line-by-line diff
+(expected vs. actual), the exit status, and any error output. When the outputs
+differ only in something invisible — a trailing newline, trailing whitespace, or
+CRLF vs LF — it says so explicitly. Run non-interactively it exits non-zero if
+anything fails, so it drops straight into CI.
+
+---
+
 ## What's in this folder
 
 ```text
@@ -295,7 +338,10 @@ r-skeleton-project/
 │   ├── get-packages.R
 │   ├── run-analysis.R
 │   ├── save-packages.R
-│   └── check-packages.R
+│   ├── check-packages.R
+│   └── run-tests.R        ← run a stdin→stdout script against tests/ (see "Testing")
+├── examples/              ← a sample stdin→stdout script (sum.R) for the test runner
+├── tests/                 ← test cases: tests/<script-name>/input.X + output.X
 ├── configure-rstudio.sh   ← one-time RStudio setup (Part 1.2)
 ├── setup-vscode.sh        ← one-time VSCode setup (Part 1.3)
 ├── new-project.sh         ← make a fresh project from this skeleton (see below)
